@@ -1,0 +1,4 @@
+.env
+database/data
+database/init.sql
+logs/nginx/*
