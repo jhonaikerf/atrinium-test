@@ -3,33 +3,56 @@
 {% block title %}Sector index{% endblock %}
 
 {% block body %}
-    <h1>Sector index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for sector in sectors %}
-            <tr>
-                <td>{{ sector.id }}</td>
-                <td>{{ sector.name }}</td>
-                <td>
-                    <a href="{{ path('sector_show', {'id': sector.id}) }}">show</a>
-                    <a href="{{ path('sector_edit', {'id': sector.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('sector_new') }}">Create new</a>
+<div class="container mt-4">
+    <div class="e-panel card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row flex-lg-nowrap justify-content-between">
+                    <div class="col">
+                        <h2 class="mr-2"><span>Sectors</span></h2>
+                    </div>
+                    <div class="px-3">
+                        <a href="{{ path('sector_new') }}" class="btn btn-md btn-primary">Create new</a>
+                    </div>
+                </div>
+            </div>
+            <div class="e-table">
+                <div class="table-responsive table-lg mt-3">
+                    <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th class="max-width">Name</th>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sector in pager.getCurrentPageResults() %}
+                            <tr>
+                                <td>{{ sector.id }}</td>
+                                <td>{{ sector.name }}</td>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td class="text-center align-middle">
+                                        <div class="btn-group align-top">
+                                            <a href="{{ path('sector_edit', {'id': sector.id}) }}" class="btn btn-sm btn-outline-secondary badge">edit</a>
+                                            <a href="{{ path('sector_edit', {'id': sector.id}) }}" class="btn btn-sm btn-outline-secondary badge">delete</a>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">no records found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                {{ include('_paginator.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

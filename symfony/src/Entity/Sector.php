@@ -38,9 +38,15 @@ class Sector
      */
     private $companies;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="sector")
+     */
+    private $users;
+
     public function __construct()
     {
         $this->companies = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function __toString(): ?string
@@ -90,6 +96,33 @@ class Sector
             if ($company->getSector() === $this) {
                 $company->setSector(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addSector($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeSector($this);
         }
 
         return $this;

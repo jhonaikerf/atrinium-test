@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Sector;
 use App\Form\SectorType;
-use App\Repository\SectorRepository;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,20 @@ class SectorController extends AbstractController
     /**
      * @Route("/", name="sector_index", methods={"GET"})
      */
-    public function index(SectorRepository $sectorRepository): Response
+    public function index(Request $request): Response
     {
-        return $this->render('sector/index.html.twig', [
-            'sectors' => $sectorRepository->findAll(),
-        ]);
+        $queryBuilder = $this->get('doctrine')->getRepository(Sector::class)->findAllQueryBuilder();
+
+        $pagerfanta = new Pagerfanta(
+            new QueryAdapter($queryBuilder)
+        );
+
+        return $this->render(
+            'sector/index.html.twig',
+            [
+                'pager' => $pagerfanta,
+            ]
+        );
     }
 
     /**
@@ -49,16 +59,6 @@ class SectorController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sector_show", methods={"GET"})
-     */
-    public function show(Sector $sector): Response
-    {
-        return $this->render('sector/show.html.twig', [
-            'sector' => $sector,
-        ]);
-    }
-
-    /**
      * @Route("/{id}/edit", name="sector_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Sector $sector): Response
@@ -79,11 +79,24 @@ class SectorController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/delete", name="sector_confirm_delete", methods={"GET"})
+     */
+    public function confirmDelete(Sector $sector): Response
+    {
+        return $this->render('sector/delete.html.twig', [
+            'sector' => $sector,
+        ]);
+    }
+
+    /**
      * @Route("/{id}", name="sector_delete", methods={"POST"})
      */
     public function delete(Request $request, Sector $sector): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sector->getId(), $request->request->get('_token'))) {
+            if (count($sector->getCompanies()) > 0) {
+                throw new \Exception('This sector is associated with a company and cannot be deleted');
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($sector);
             $entityManager->flush();

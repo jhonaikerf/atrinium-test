@@ -1,0 +1,4 @@
+<div class="d-flex justify-content-between">
+    <p class="my-auto">Showing {{ 1 + ((pager.getCurrentPage - 1) * 10) }} to {{ pager.hasNextPage() ? pager.getCurrentPage * pager.MaxPerPage() : pager.getNbResults()}} of {{pager.getNbResults()}} entries ( {{pager.getNbPages()}} page{{pager.getNbPages() > 1 ? 's' :''}} )</p>
+    {{ pagerfanta(pager) }}
+</div>

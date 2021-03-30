@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Company;
 use App\Form\CompanyType;
-use App\Repository\CompanyRepository;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,20 @@ class CompanyController extends AbstractController
     /**
      * @Route("/", name="company_index", methods={"GET"})
      */
-    public function index(CompanyRepository $companyRepository): Response
+    public function index(Request $request): Response
     {
-        return $this->render('company/index.html.twig', [
-            'companies' => $companyRepository->findAll(),
-        ]);
+        $queryBuilder = $this->get('doctrine')->getRepository(Company::class)->findAllQueryBuilder();
+
+        $pagerfanta = new Pagerfanta(
+            new QueryAdapter($queryBuilder)
+        );
+
+        return $this->render(
+            'company/index.html.twig',
+            [
+                'pager' => $pagerfanta,
+            ]
+        );
     }
 
     /**
@@ -49,16 +59,6 @@ class CompanyController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="company_show", methods={"GET"})
-     */
-    public function show(Company $company): Response
-    {
-        return $this->render('company/show.html.twig', [
-            'company' => $company,
-        ]);
-    }
-
-    /**
      * @Route("/{id}/edit", name="company_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Company $company): Response
@@ -75,6 +75,16 @@ class CompanyController extends AbstractController
         return $this->render('company/edit.html.twig', [
             'company' => $company,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/delete", name="company_confirm_delete", methods={"GET"})
+     */
+    public function confirmDelete(Company $company): Response
+    {
+        return $this->render('company/delete.html.twig', [
+            'company' => $company,
         ]);
     }
 

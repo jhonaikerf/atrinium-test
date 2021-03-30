@@ -3,35 +3,54 @@
 {% block title %}User index{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Roles</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>
-                    <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('user_new') }}">Create new</a>
+<div class="container mt-4">
+    <div class="e-panel card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row flex-lg-nowrap justify-content-between">
+                    <div class="col">
+                        <h2 class="mr-2"><span>Users</span></h2>
+                    </div>
+                    <div class="px-3">
+                        <a href="{{ path('user_new') }}" class="btn btn-md btn-primary">Create new</a>
+                    </div>
+                </div>
+            </div>
+            <div class="e-table">
+                <div class="table-responsive table-lg mt-3">
+                    <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Username</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in pager.getCurrentPageResults() %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                                <td class="text-center align-middle">
+                                    <div class="btn-group align-top">
+                                        <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn btn-sm btn-outline-secondary badge">edit</a>
+                                        <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn btn-sm btn-outline-secondary badge">delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">no records found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                {{ include('_paginator.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

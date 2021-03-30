@@ -38,13 +38,18 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Sector::class)
+     * @ORM\ManyToMany(targetEntity=Sector::class, inversedBy="users")
      */
     private $sector;
 
     public function __construct()
     {
         $this->sector = new ArrayCollection();
+    }
+
+    public function __toString(): ?string
+    {
+        return $this->username;
     }
 
     public function getId(): ?int
@@ -75,7 +80,7 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        
+
         return array_unique($roles);
     }
 

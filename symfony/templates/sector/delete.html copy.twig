@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete Sector{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="e-panel card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row flex-lg-nowrap">
+                    <div class="col">
+                        <h2 class="mr-2"><span>Delete Sector</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="e-table">
+                Are you sure you want to delete the sector {{ sector.name }}?
+                <div class="row flex-lg-nowrap mt-4">
+                    <div class="col">
+                         {{ include('sector/_delete_form.html.twig') }}
+                    </div>
+                    <div class="col">
+                        <a href="{{ path('sector_index') }}" class="btn btn-md btn-primary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

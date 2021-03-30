@@ -3,9 +3,21 @@
 {% block title %}New Company{% endblock %}
 
 {% block body %}
-    <h1>Create new Company</h1>
-
-    {{ include('company/_form.html.twig') }}
-
-    <a href="{{ path('company_index') }}">back to list</a>
+<div class="container mt-4">
+    <div class="e-panel card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row flex-lg-nowrap">
+                    <div class="col">
+                        <h2 class="mr-2"><span>Create New Company</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="e-table">
+                {{ include('company/_form.html.twig') }}
+                <a href="{{ path('company_index') }}" class="btn btn-md btn-primary mt-3">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
