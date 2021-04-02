@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fixer{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {% for label, messages in app.flashes(['success', 'danger']) %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="e-panel card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row flex-lg-nowrap">
+                    <div class="col">
+                        <h2 class="mr-2"><span>Fixer</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="e-table">
+                {{ include('fixer/_form.html.twig', {'button_label': 'Calculate'}) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

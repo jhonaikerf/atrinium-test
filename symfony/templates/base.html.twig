@@ -3,23 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
-           and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
-            {# 'app' must match the first argument to addEntry() in webpack.config.js #}
             {{ encore_entry_link_tags('app') }}
-
-            <!-- Renders a link tag (if your module requires any CSS)
-                 <link rel="stylesheet" href="/build/app.css"> -->
         {% endblock %}
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
-
-            <!-- Renders app.js & a webpack runtime.js file
-                <script src="/build/runtime.js" defer></script>
-                <script src="/build/app.js" defer></script>
-                See note below about the "defer" attribute -->
         {% endblock %}
     </head>
     <body>
@@ -43,8 +32,8 @@
                             </li>
                         {% endif %}
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Fixer</a>
+                    <li class="nav-item {{app.request.attributes.get('_route') == 'fixer' ? 'active' : ''}}">
+                        <a class="nav-link" href="{{ path('fixer') }}">Fixer</a>
                     </li>
                 </ul>
                 <div class="text-light">

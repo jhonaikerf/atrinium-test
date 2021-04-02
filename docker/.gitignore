@@ -1,4 +1,5 @@
 .env
 database/data
 database/init.sql
+mongodb/data
 logs/nginx/*
