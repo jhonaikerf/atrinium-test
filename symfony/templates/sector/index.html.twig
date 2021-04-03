@@ -11,9 +11,11 @@
                     <div class="col">
                         <h2 class="mr-2"><span>Sectors</span></h2>
                     </div>
-                    <div class="px-3">
-                        <a href="{{ path('sector_new') }}" class="btn btn-md btn-primary">Create new</a>
-                    </div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="px-3">
+                            <a href="{{ path('sector_new') }}" class="btn btn-md btn-primary">Create new</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="e-table">
@@ -37,7 +39,7 @@
                                     <td class="text-center align-middle">
                                         <div class="btn-group align-top">
                                             <a href="{{ path('sector_edit', {'id': sector.id}) }}" class="btn btn-sm btn-outline-secondary badge">edit</a>
-                                            <a href="{{ path('sector_edit', {'id': sector.id}) }}" class="btn btn-sm btn-outline-secondary badge">delete</a>
+                                            <a href="{{ path('sector_confirm_delete', {'id': sector.id}) }}" class="btn btn-sm btn-outline-secondary badge">delete</a>
                                         </div>
                                     </td>
                                 {% endif %}

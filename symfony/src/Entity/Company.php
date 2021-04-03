@@ -21,7 +21,13 @@ class Company
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      allowEmptyString = false
+     * )
      */
     private $name;
 

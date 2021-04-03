@@ -10,13 +10,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username')
+            ->add('username', null, [
+                'empty_data' => '',
+            ])
             ->add('roles', ChoiceType::class,
                 [
                     'choices' => [
@@ -36,12 +40,26 @@ class UserType extends AbstractType
                 if (!$administrator || null === $administrator->getId()) {
                     $event->getForm()->add('password', PasswordType::class, [
                         'required' => true,
-                        'mapped' => false,
+                        'mapped' => true,
+                        'empty_data' => '',
+                        'constraints' => [
+                            new NotBlank(),
+                            new Length([
+                                'min' => 5
+                            ]),
+                        ],
                     ]);
                 } else {
                     $event->getForm()->add('password', PasswordType::class, [
                         'required' => false,
-                        'mapped' => false,
+                        'mapped' => true,
+                        'empty_data' => '',
+                        'constraints' => [
+                            new Length([
+                                'min' => 5 ,
+                                'allowEmptyString' => true
+                            ]),
+                        ],
                     ]);
                 }
             }

@@ -69,14 +69,15 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user, UserPasswordEncoderInterface $encoder): Response
     {
+        $oldPassword = $user->getPassword();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            if($form->get('password')->getData()){
-                $user->setPassword($encoder->encodePassword($user, $form->get('password')->getData()));
-            }
+            $newPassword = $form->get('password')->getData();
+            $password = !empty($newPassword) ? $encoder->encodePassword($user, $newPassword) : $oldPassword;
+            $user->setPassword($password);
             $entityManager->persist($user);
             $entityManager->flush();
 

@@ -36,12 +36,6 @@ services:
     depends_on:
       - database
       - mongodb
-    environment:
-      - APP_ENV=${APP_ENV}
-      - APP_SECRET=${APP_SECRET}
-      - DATABASE_URL=mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@database:3306/${DATABASE_NAME}
-      - MONGODB_URL=mongodb://mongodb:27017
-      - FIXER_ACCESS_KEY=${FIXER_ACCESS_KEY}
     volumes:
       - ../symfony:/var/www
     networks:

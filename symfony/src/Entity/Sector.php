@@ -23,7 +23,7 @@ class Sector
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=false)
      * @Assert\NotBlank
      * @Assert\Length(
      *      min = 2,
