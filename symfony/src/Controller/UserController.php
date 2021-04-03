@@ -28,6 +28,10 @@ class UserController extends AbstractController
             new QueryAdapter($queryBuilder)
         );
 
+        $pagerfanta->setMaxPerPage(10);
+        $page = $request->query->getInt('page');
+        $pagerfanta->setCurrentPage($page ? $page : 1);
+
         return $this->render(
             'user/index.html.twig',
             [

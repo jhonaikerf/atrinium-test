@@ -26,6 +26,9 @@ class SectorController extends AbstractController
         $pagerfanta = new Pagerfanta(
             new QueryAdapter($queryBuilder)
         );
+        $pagerfanta->setMaxPerPage(10);
+        $page = $request->query->getInt('page');
+        $pagerfanta->setCurrentPage($page ? $page : 1);
 
         return $this->render(
             'sector/index.html.twig',

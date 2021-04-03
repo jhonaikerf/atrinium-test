@@ -2,6 +2,26 @@
 
 {% block title %}Company index{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" defer>
+        var route = "{{ path('company_index')|escape('js') }}";
+        let name = "{{ app.request.query.get('name')|escape('js') }}";
+        let sector = "{{ app.request.query.get('sector')|escape('js') }}";
+        const nameInput = document.getElementById("name");
+        nameInput.addEventListener('change', (event) => {
+            name = event.target.value;
+            window.location.href = `${route}?name=${name}&sector=${sector}`;
+        });
+
+        const sectorInput = document.getElementById("sector");
+        sectorInput.addEventListener('change', (event) => {
+            sector = event.target.value;
+            window.location.href = `${route}?name=${name}&sector=${sector}`;
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-4">
     <div class="e-panel card">
@@ -15,6 +35,24 @@
                         <a href="{{ path('company_new') }}" class="btn btn-md btn-primary">Create new</a>
                     </div>
                 </div>
+                <div class="row flex-lg-nowrap justify-content-between">
+                    <div class="col-5 form-group row">
+                        <label for="colFormLabel" class="col-sm-4 col-form-label">Name:</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="name" placeholder="name" name="name" value="{{ app.request.query.get('name') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-5 form-group row">
+                        <label for="colFormLabel" class="col-sm-4 col-form-label">Sector:</label>
+                        <select class="col-sm-6 custom-select mr-sm-2" id="sector" name="sector">
+                            <option value="" {{ app.request.query.get('sector') == "" ? 'selected' : ''}} >Choose...</option>
+                            {% for sector in sectors %}
+                                <option value="{{ sector.id }}" {{ app.request.query.get('sector') == sector.id ? 'selected' : ''}}>{{ sector.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="e-table">
                 <div class="table-responsive table-lg mt-3">
@@ -25,6 +63,7 @@
                             <th class="max-width">Name</th>
                             <th>Phone</th>
                             <th>Email</th>
+                            <th>Sector</th>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <th>Actions</th>
                             {% endif %}
@@ -37,6 +76,7 @@
                                 <td>{{ company.name }}</td>
                                 <td>{{ company.phone }}</td>
                                 <td>{{ company.email }}</td>
+                                <td>{{ company.sector.name }}</td>
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <td class="text-center align-middle">
                                         <div class="btn-group align-top">
@@ -54,7 +94,15 @@
                     </tbody>
                     </table>
                 </div>
-                {{ include('_paginator.html.twig') }}
+                <div class="d-flex justify-content-between">
+                    <p class="my-auto">Showing {{ 1 + ((pager.getCurrentPage - 1) * 10) }} to {{ pager.hasNextPage() ? pager.getCurrentPage * pager.MaxPerPage() : pager.getNbResults()}} of {{pager.getNbResults()}} entries ( {{pager.getNbPages()}} page{{pager.getNbPages() > 1 ? 's' :''}} )</p>
+                    {{ pagerfanta(pager, null,  {
+                        'routeParams': {
+                            'name': app.request.query.get('name'),
+                            'sector': app.request.query.get('sector')
+                        },
+                    }) }}
+                </div>
             </div>
         </div>
     </div>

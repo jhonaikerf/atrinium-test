@@ -25,10 +25,10 @@ class CompanyRepository extends ServiceEntityRepository
 
     public function findAllQueryBuilder()
     {
-        $builder = $this->createQueryBuilder('company');
+        $builder = $this->createQueryBuilder('company')
+            ->innerJoin('company.sector', 'sector');
         if($this->security->getUser() && !in_array('ROLE_ADMIN', $this->security->getUser()->getRoles())){
-            $builder->innerJoin('company.sector', 'sector')
-                ->innerJoin('sector.users', 'user')
+            $builder->innerJoin('sector.users', 'user')
                 ->where('user.id = :user_id')
                 ->setParameter('user_id', $this->security->getUser()->getId());
         }

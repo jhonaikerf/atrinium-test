@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Company;
 use App\Form\CompanyType;
+use App\Repository\SectorRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,18 +20,32 @@ class CompanyController extends AbstractController
     /**
      * @Route("/", name="company_index", methods={"GET"})
      */
-    public function index(Request $request): Response
+    public function index(Request $request, SectorRepository $sectorRepository): Response
     {
         $queryBuilder = $this->get('doctrine')->getRepository(Company::class)->findAllQueryBuilder();
 
+        if ($request->query->getAlnum('name')) {
+            $queryBuilder
+                ->andWhere('company.name LIKE :companyName')
+                ->setParameter('companyName', '%' . $request->query->getAlnum('name') . '%');
+        }
+
+        if ($request->query->getInt('sector')) {
+            $queryBuilder->andWhere('sector.id = :sectorId')
+                ->setParameter('sectorId', $request->query->getInt('sector'));
+        }
         $pagerfanta = new Pagerfanta(
             new QueryAdapter($queryBuilder)
         );
+        $pagerfanta->setMaxPerPage(10);
+        $page = $request->query->getInt('page');
+        $pagerfanta->setCurrentPage($page ? $page : 1);
 
         return $this->render(
             'company/index.html.twig',
             [
                 'pager' => $pagerfanta,
+                'sectors' => $sectorRepository->findAll()
             ]
         );
     }
